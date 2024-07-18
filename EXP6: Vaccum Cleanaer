@@ -1,0 +1,52 @@
+class VacuumCleaner:
+    def _init_(self, environment, initial_position):
+        self.environment = environment
+        self.position = initial_position
+        self.cleaning_log = []
+
+    def sense(self):
+        return self.environment[self.position]
+
+    def actuate(self, action):
+        if action == "SUCK":
+            self.environment[self.position] = "Clean"
+            self.cleaning_log.append(f"Cleaned at position {self.position}")
+        elif action == "LEFT":
+            if self.position > 0:
+                self.position -= 1
+            self.cleaning_log.append(f"Moved LEFT to position {self.position}")
+        elif action == "RIGHT":
+            if self.position < len(self.environment) - 1:
+                self.position += 1
+            self.cleaning_log.append(f"Moved RIGHT to position {self.position}")
+
+    def decide_action(self):
+        if self.sense() == "Dirty":
+            return "SUCK"
+        elif self.position == 0:
+            return "RIGHT"
+        else:
+            return "LEFT"
+
+    def clean(self, steps):
+        for _ in range(steps):
+            action = self.decide_action()
+            self.actuate(action)
+
+# Example environment: A list with "Dirty" and "Clean" states
+environment = ["Dirty", "Dirty", "Clean", "Dirty", "Clean"]
+
+# Initial position of the vacuum cleaner
+initial_position = 0
+
+# Create a vacuum cleaner agent
+vacuum = VacuumCleaner(environment, initial_position)
+
+# Clean the environment for a specified number of steps
+vacuum.clean(10)
+
+# Print the environment and cleaning log
+print("Final Environment State:", vacuum.environment)
+print("Cleaning Log:")
+for log in vacuum.cleaning_log:
+    print(log)
